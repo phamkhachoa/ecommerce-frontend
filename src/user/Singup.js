@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import Layout from '../core/Layout';
 import API from '../config';
+import {Link} from 'react-router-dom';
 
 const Signup = () => {
 
@@ -19,11 +20,37 @@ const Signup = () => {
     const submitForm = (event) => {
         event.preventDefault();
         signup({name: name, email: email, password: password})
+        .then(data => {
+            if (data.error) {
+                setValues({...values, error: data.error, success: false})
+            } else {
+                setValues({
+                    ...values,
+                    name: '',
+                    email: '',
+                    password: '',
+                    error: '',
+                    success: true
+                })
+            }
+        })
     }
+
+    const showError = () => (
+        <div className="alert alert-danger" style={{display: error ? '': 'none'}}>
+            {values.error}
+        </div>
+    );
+
+    const showSuccess = () => (
+        <div className="alert alert-success" style={{display: success ? '': 'none'}}>
+            New account is created. Please <Link to="/signin">Signin!</Link>
+        </div>
+    );
 
     const signup = (user) => {
         //console.log(name, email, password);
-        fetch(`${API}/signup`, {
+         return fetch(`${API}/signup`, {
             method: "POST",
             headers: {
                 Accept: 'application/json',
@@ -39,17 +66,21 @@ const Signup = () => {
         })
     };
 
-    const {name, email, password} = values;
+    const {name, email, password, error, success} = values;
 
     const signUpForm = () => (
         <form className="">
             <div className="form-group">
                 <label className="text-muted">Name: </label>
-                <input onChange={handleChange('name')} type="text" className="form-control" name="name"/>
+                <input onChange={handleChange('name')} type="text" className="form-control" name="name"
+                    value={name}
+                />
             </div>
             <div className="form-group">
                 <label className="text-muted">Email: </label>
-                <input onChange={handleChange('email')} type="text" className="form-control" name="email"/>
+                <input onChange={handleChange('email')} type="text" className="form-control" name="email"
+                    value={email}
+                />
             </div>
             <div className="form-group">
                 <label className="text-muted">Password: </label>
@@ -62,6 +93,8 @@ const Signup = () => {
     return (
         <Layout title="SigninUp" description="Signup to Node React E-commerce App"
             className="container col-8 offset-2">
+            {showError()}
+            {showSuccess()}  
             {signUpForm()}
         </Layout>
     );
