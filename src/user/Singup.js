@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import Layout from '../core/Layout';
-import API from '../config';
 import {Link} from 'react-router-dom';
 import {signup} from '../auth';
 

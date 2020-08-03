@@ -50,6 +50,20 @@ export const signout = (next) =>{
         return fetch(`${API}/signout`, {
             method: "GET",
         })
-        .then
+        .then(response => {
+            console.log("signout", response);
+        })
+        .catch(err => console.log(err));
+    }
+}
+
+export const isAuthenticated = () => {
+    if (typeof window == 'undefined') {
+        return false;
+    }
+    if (localStorage.getItem('jwt')) {
+        return JSON.parse(localStorage.getItem('jwt'));
+    } else {
+        return false;
     }
 }
